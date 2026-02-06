@@ -3,512 +3,301 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Didi Controller 😌</title>
-
+<title>Ultimate Controller Access 🎮</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <style>
-    * { 
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-    }
+:root {
+    --accent: #818cf8;
+    --success: #22c55e;
+    --danger: #f87171;
+    --glass: rgba(255,255,255,0.05);
+    --glass-border: rgba(255,255,255,0.12);
+}
 
-    body {
-        height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        overflow: hidden;
-        position: relative;
-    }
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: radial-gradient(circle at top, #020617, #00050a);
+    overflow: hidden;
+    color: #ffffff;
+    cursor: none;
+}
 
-    /* Floating hearts background */
-    .heart-bg {
-        position: absolute;
-        font-size: 20px;
-        opacity: 0;
-        pointer-events: none;
-        animation: float-up 4s ease-in infinite;
-    }
+/* Cursor */
+#cursor-glow {
+    position: fixed;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(129,140,248,0.15) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    z-index: -1;
+    transition: width 0.3s, height 0.3s;
+}
+#dot {
+    width: 10px;
+    height: 10px;
+    background: linear-gradient(45deg, #818cf8, #22c55e);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 1000;
+    transition: transform 0.1s ease-out;
+}
 
-    @keyframes float-up {
-        0% {
-            transform: translateY(0) rotate(0deg);
-            opacity: 0;
-        }
-        10% {
-            opacity: 0.6;
-        }
-        90% {
-            opacity: 0.3;
-        }
-        100% {
-            transform: translateY(-100vh) rotate(360deg);
-            opacity: 0;
-        }
-    }
+/* Card */
+.card {
+    background: var(--glass);
+    backdrop-filter: blur(45px);
+    border: 1px solid var(--glass-border);
+    padding: 50px 40px;
+    border-radius: 40px;
+    width: 90%;
+    max-width: 440px;
+    text-align: center;
+    box-shadow: 0 50px 120px rgba(0,0,0,0.8);
+    position: relative;
+    z-index: 10;
+    transition: transform 0.4s ease, opacity 0.4s ease;
+}
 
-    .card {
-        width: 90%;
-        max-width: 500px;
-        background: white;
-        padding: 50px 40px;
-        border-radius: 24px;
-        text-align: center;
-        box-shadow: 0 40px 80px rgba(0,0,0,0.3);
-        position: relative;
-        animation: card-entrance 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
+/* Karma */
+.karma-container {
+    width: 100%;
+    height: 8px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 12px;
+    margin-bottom: 30px;
+    overflow: hidden;
+}
+#karma-bar {
+    width: 20%;
+    height: 100%;
+    background: linear-gradient(90deg, #818cf8, #22c55e);
+    transition: width 0.5s ease, background 0.5s ease;
+}
 
-    @keyframes card-entrance {
-        0% {
-            transform: scale(0.8) translateY(30px);
-            opacity: 0;
-        }
-        100% {
-            transform: scale(1) translateY(0);
-            opacity: 1;
-        }
-    }
+/* Header & Status */
+h1 {
+    font-weight: 800;
+    font-size: 2.4rem;
+    margin: 0 0 12px;
+    letter-spacing: -1px;
+}
+.status-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    background: rgba(129,140,248,0.2);
+    color: var(--accent);
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    margin-bottom: 25px;
+}
 
-    h1 {
-        font-size: 2.4rem;
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        margin-bottom: 16px;
-        font-weight: 700;
-        letter-spacing: -0.5px;
-    }
+/* Compliment Bubble */
+.compliment-bubble {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--glass-border);
+    padding: 20px;
+    border-radius: 28px;
+    margin-bottom: 30px;
+    min-height: 70px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-style: italic;
+    color: #e2e8f0;
+    transition: all 0.3s ease;
+    animation: float 4s ease-in-out infinite alternate;
+}
+@keyframes float {
+    0% { transform: translateY(0px); }
+    100% { transform: translateY(-6px); }
+}
+.bribe-tag {
+    font-size: 0.75rem;
+    color: var(--success);
+    font-weight: 700;
+    margin-top: 8px;
+    display: none;
+}
 
-    p {
-        color: #555;
-        font-size: 1.05rem;
-        line-height: 1.6;
-        margin-bottom: 10px;
-    }
+/* Buttons */
+.action-area {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    height: 140px;
+    position: relative;
+}
+button {
+    padding: 18px 44px;
+    border-radius: 24px;
+    border: none;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.4s ease;
+}
+#yesBtn {
+    background: linear-gradient(135deg, #818cf8, #22c55e);
+    color: #fff;
+    box-shadow: 0 8px 30px rgba(129,140,248,0.4);
+    z-index: 50;
+    transform-origin: center;
+    --yes-scale: 1;
+}
+#yesBtn.pulse {
+    animation: pulseGlow 1s infinite alternate;
+    box-shadow: 0 0 20px #818cf8, 0 0 40px #22c55e, 0 0 60px #818cf8;
+}
+@keyframes pulseGlow {
+    0% { transform: scale(var(--yes-scale,1)); box-shadow: 0 0 10px #818cf8, 0 0 20px #22c55e; }
+    100% { transform: scale(calc(var(--yes-scale,1) + 0.15)); box-shadow: 0 0 25px #818cf8, 0 0 50px #22c55e; }
+}
 
-    .subtitle {
-        color: #888;
-        font-size: 0.9rem;
-        font-style: italic;
-    }
+#noBtn {
+    background: rgba(255,255,255,0.03);
+    color: #94a3b8;
+    border: 1px solid rgba(255,255,255,0.08);
+}
 
-    .button-zone {
-        margin-top: 40px;
-        height: 100px;
-        position: relative;
-        border-radius: 12px;
-    }
+/* Shake effect */
+.shake {
+    animation: shake 0.5s ease-in-out;
+}
+@keyframes shake {
+    0%,100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+}
 
-    button {
-        padding: 16px 42px;
-        font-size: 1.15rem;
-        font-weight: 600;
-        border-radius: 50px;
-        border: none;
-        cursor: pointer;
-        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-        font-family: inherit;
-    }
+/* Small system text */
+.system-text {
+    font-size: 0.7rem;
+    color: #64748b;
+    margin-top: 20px;
+}
 
-    button:active {
-        transform: scale(0.95);
-    }
-
-    #noBtn {
-        background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
-        color: white;
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-        transition: all 0.15s ease-out;
-    }
-
-    #noBtn:hover {
-        box-shadow: 0 12px 28px rgba(255,107,107,0.4);
-    }
-
-    #yesBtn {
-        background: linear-gradient(135deg, #51cf66, #37b24d);
-        color: white;
-        display: none;
-        margin: 25px auto 0;
-        animation: yes-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    #yesBtn:hover {
-        transform: scale(1.05);
-        box-shadow: 0 12px 28px rgba(81,207,102,0.4);
-    }
-
-    /* Success State */
-    .success-container {
-        display: none;
-        animation: success-show 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    .success-container.show {
-        display: block;
-    }
-
-    .result {
-        font-size: 2rem;
-        font-weight: 700;
-        background: linear-gradient(135deg, #51cf66, #37b24d);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        margin-bottom: 25px;
-    }
-
-    .emoji-row {
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-        margin-bottom: 25px;
-        flex-wrap: wrap;
-    }
-
-    .emoji-row span {
-        font-size: 2.5rem;
-        animation: emoji-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-        display: inline-block;
-    }
-
-    .emoji-row span:nth-child(1) { animation-delay: 0.1s; }
-    .emoji-row span:nth-child(2) { animation-delay: 0.2s; }
-    .emoji-row span:nth-child(3) { animation-delay: 0.3s; }
-    .emoji-row span:nth-child(4) { animation-delay: 0.4s; }
-
-    @keyframes emoji-pop {
-        0% { transform: scale(0) rotate(-180deg); opacity: 0; }
-        100% { transform: scale(1) rotate(0deg); opacity: 1; }
-    }
-
-    .image-container {
-        margin-top: 25px;
-        animation: image-reveal 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s both;
-    }
-
-    .image-frame {
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        padding: 6px;
-        border-radius: 20px;
-        display: inline-block;
-        box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
-    }
-
-    #successImg {
-        max-width: 100%;
-        width: 320px;
-        height: auto;
-        border-radius: 16px;
-        display: block;
-        border: 4px solid white;
-    }
-
-    @keyframes image-reveal {
-        0% { 
-            transform: scale(0.5) translateY(30px); 
-            opacity: 0; 
-        }
-        100% { 
-            transform: scale(1) translateY(0); 
-            opacity: 1; 
-        }
-    }
-
-    @keyframes success-show {
-        0% { 
-            transform: translateY(20px); 
-            opacity: 0; 
-        }
-        100% { 
-            transform: translateY(0); 
-            opacity: 1; 
-        }
-    }
-
-    .shake {
-        animation: shake 0.4s;
-    }
-
-    @keyframes shake {
-        0%, 100% { transform: translate(-50%, -50%) rotate(0deg); }
-        25% { transform: translate(-50%, -50%) rotate(-5deg); }
-        75% { transform: translate(-50%, -50%) rotate(5deg); }
-    }
-
-    .attempt-counter {
-        position: absolute;
-        top: 15px;
-        right: 20px;
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        color: white;
-        padding: 8px 16px;
-        border-radius: 20px;
-        font-size: 0.85rem;
-        font-weight: 600;
-        opacity: 0;
-        transition: opacity 0.3s;
-    }
-
-    .attempt-counter.show {
-        opacity: 1;
-    }
-
-    @media (max-width: 500px) {
-        .card {
-            padding: 40px 30px;
-        }
-        
-        h1 {
-            font-size: 2rem;
-        }
-        
-        p {
-            font-size: 0.95rem;
-        }
-        
-        button {
-            padding: 14px 36px;
-            font-size: 1rem;
-        }
-
-        .emoji-row span {
-            font-size: 2rem;
-        }
-
-        #successImg {
-            width: 100%;
-        }
-    }
+/* Responsive */
+@media (max-width: 500px){
+    .card { padding: 40px 20px; border-radius: 30px; }
+    h1 { font-size: 2rem; }
+}
 </style>
 </head>
-
 <body>
 
-<div class="card">
-    <div class="attempt-counter">Attempts: <span id="counter">0</span></div>
+<div id="cursor-glow"></div>
+<div id="dot"></div>
+
+<div class="card" id="mainCard">
+    <div class="karma-container">
+        <div id="karma-bar"></div>
+    </div>
+    <span class="status-badge">DIRECT ACCESS REQUEST</span>
+    <h1> Didi Controller?</h1>
     
-    <div id="questionState">
-        <h1>Didi Controller? 😌</h1>
-        <p>Fulo ka taro ka sab ka kaina hee aak hazaro meh khushi behna hee</p>
-        <p class="subtitle">Will you agree? 🌸</p>
-
-        <div class="button-zone">
-            <button id="noBtn">No</button>
-        </div>
-
-        <button id="yesBtn">Yes! ✨</button>
+    <div class="compliment-bubble" id="compContainer">
+        <span id="compText">"kya milega kya"</span>
     </div>
 
-    <div class="success-container" id="successState">
-        <div class="result">Khushi is the best! 💚</div>
-        
-        <div class="emoji-row">
-            <span>🎉</span>
-            <span>💖</span>
-            <span>✨</span>
-            <span>🎊</span>
-        </div>
-        <div class="emoji-row">
-            <span>✨</span>
-            <span>💖</span>
-            <span>🎉</span>
-        </div>
-
-        <div class="image-container">
-            <div class="image-frame">
-                <img id="successImg" src="/IMG_1180.JPG" alt="Khushi">
-            </div>
-        </div>
+    <div class="action-area">
+        <button id="yesBtn">Yes 😌</button>
+        <button id="noBtn">No 🙃</button>
     </div>
+
+    <p class="system-text">best sister award</p>
 </div>
 
 <script>
-    const noBtn = document.getElementById("noBtn");
-    const yesBtn = document.getElementById("yesBtn");
-    const questionState = document.getElementById("questionState");
-    const successState = document.getElementById("successState");
-    const zone = document.querySelector(".button-zone");
-    const counter = document.getElementById("counter");
-    const attemptCounter = document.querySelector(".attempt-counter");
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const compText = document.getElementById("compText");
+const karmaBar = document.getElementById("karma-bar");
+const card = document.getElementById("mainCard");
+const glow = document.getElementById("cursor-glow");
+const dot = document.getElementById("dot");
 
-    let tries = 0;
-    let touchDevice = false;
+document.addEventListener("mousemove", (e) => {
+    glow.style.left = e.clientX + "px";
+    glow.style.top = e.clientY + "px";
+    dot.style.left = e.clientX + "px";
+    dot.style.top = e.clientY + "px";
+});
 
-    function createHeart() {
-        const heart = document.createElement('div');
-        heart.className = 'heart-bg';
-        heart.textContent = '💕';
-        heart.style.left = Math.random() * 100 + 'vw';
-        heart.style.animationDelay = Math.random() * 4 + 's';
-        heart.style.fontSize = (Math.random() * 15 + 15) + 'px';
-        document.body.appendChild(heart);
-        
-        setTimeout(() => heart.remove(), 4000);
-    }
+const compliments = [
+    "You're looking particularly brilliant ",
+    "The best sister in the entire world?",
+     "Salman khan will meet you . ye yeh vai kee dua he",
+    "10kg wet loss after saying yes - scientifically proven!",
+    "Your gaming skills will thank you.",
+    "You have the heart of a champion.",
+    "Legendary Sister status: LOADING..."
+];
 
-    setInterval(createHeart, 800);
+let clickCount = 0;
+let yesScale = 1;
 
-    function dodge(e) {
-        if (e.type === 'touchstart') {
-            touchDevice = true;
-            e.preventDefault();
-        }
+noBtn.addEventListener("mouseenter", () => {
+    clickCount++;
 
-        const maxX = zone.clientWidth - noBtn.offsetWidth;
-        const maxY = zone.clientHeight - noBtn.offsetHeight;
+    // No button dodges
+    let x = Math.random()*120-60;
+    let y = Math.random()*60-30;
+    noBtn.style.transform = `translate(${x}px, ${y}px) scale(${Math.max(0.5, 1 - clickCount*0.1)})`;
 
-        let x = Math.random() * maxX;
-        let y = Math.random() * maxY;
+    // Karma Bar update
+    karmaBar.style.width = Math.min(20 + clickCount*15, 100) + "%";
+    if(clickCount > 3) karmaBar.style.background = "#22c55e";
 
-        const centerX = maxX / 2;
-        const centerY = maxY / 2;
-        if (Math.abs(x - centerX) < 30) x = x > centerX ? x + 40 : x - 40;
-        if (Math.abs(y - centerY) < 20) y = y > centerY ? y + 30 : y - 30;
+    // Change compliment
+    compText.innerText = compliments[Math.min(clickCount-1, compliments.length-1)];
 
-        noBtn.style.left = Math.max(0, Math.min(x, maxX)) + "px";
-        noBtn.style.top = Math.max(0, Math.min(y, maxY)) + "px";
+    // Grow Yes button with pulse
+    yesScale += 0.3;
+    yesBtn.style.setProperty('--yes-scale', yesScale);
+    yesBtn.classList.add('pulse');
+});
 
-        noBtn.classList.add('shake');
-        setTimeout(() => noBtn.classList.remove('shake'), 400);
-
-        tries++;
-        counter.textContent = tries;
-        attemptCounter.classList.add('show');
-
-        if (tries === 1) {
-            yesBtn.style.display = "inline-block";
-        }
-
-        if (tries > 3) {
-            const noScale = Math.max(0.5, 1 - (tries * 0.06));
-            const yesScale = Math.min(1.4, 1 + (tries * 0.06));
-            noBtn.style.transform = `translate(-50%, -50%) scale(${noScale})`;
-            yesBtn.style.transform = `scale(${yesScale})`;
-        }
-    }
-
-    let mouseX = 0;
-    let mouseY = 0;
-    
-    document.addEventListener('mousemove', (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-        checkProximity();
-    });
-
-    function checkProximity() {
-        if (!noBtn.offsetParent) return;
-        
-        const rect = noBtn.getBoundingClientRect();
-        const btnCenterX = rect.left + rect.width / 2;
-        const btnCenterY = rect.top + rect.height / 2;
-        
-        const distance = Math.sqrt(
-            Math.pow(mouseX - btnCenterX, 2) + 
-            Math.pow(mouseY - btnCenterY, 2)
-        );
-        
-        if (distance < 80) {
-            dodge({ type: 'proximity' });
-        }
-    }
-
- 
-    noBtn.addEventListener("mouseenter", (e) => {
-        if (!touchDevice) dodge(e);
-    });
-    
-    noBtn.addEventListener("mouseover", (e) => {
-        if (!touchDevice) dodge(e);
-    });
-    
-    noBtn.addEventListener("mousedown", (e) => {
-        e.preventDefault();
-        dodge(e);
-    });
-    
-    noBtn.addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        dodge(e);
-        return false;
-    });
-
-    noBtn.addEventListener("touchstart", (e) => {
-        dodge(e);
-    });
-    
-    noBtn.addEventListener("touchmove", (e) => {
-        e.preventDefault();
-        dodge(e);
-    });
-    
-    noBtn.addEventListener("touchend", (e) => {
-        e.preventDefault();
-        dodge(e);
-    });
-
-    noBtn.addEventListener("contextmenu", (e) => {
-        e.preventDefault();
-        dodge(e);
-    });
-
-    noBtn.addEventListener("pointerdown", (e) => {
-        e.preventDefault();
-        dodge(e);
-    });
-    
-    noBtn.addEventListener("pointerenter", (e) => {
-        if (!touchDevice) dodge(e);
-    });
-
-    
-    setInterval(checkProximity, 50);
-
-   
-    yesBtn.addEventListener("click", () => {
-        questionState.style.display = "none";
-        successState.classList.add('show');
-    
-        
-        for (let i = 0; i < 20; i++) {
-            setTimeout(createHeart, i * 80);
-        }
-        
-       
-        const emojis = ['🎉', '🎊', '✨', '💖', '🌟', '💝', '🎈', '⭐'];
-        for (let i = 0; i < 40; i++) {
-            setTimeout(() => {
-                const emoji = document.createElement('div');
-                emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-                emoji.style.position = 'fixed';
-                emoji.style.left = Math.random() * window.innerWidth + 'px';
-                emoji.style.top = '-50px';
-                emoji.style.fontSize = (Math.random() * 20 + 25) + 'px';
-                emoji.style.transition = 'all 2s ease-in';
-                emoji.style.pointerEvents = 'none';
-                emoji.style.zIndex = '1000';
-                document.body.appendChild(emoji);
-                
-                setTimeout(() => {
-                    emoji.style.top = window.innerHeight + 'px';
-                    emoji.style.transform = `rotate(${Math.random() * 720 - 360}deg)`;
-                    emoji.style.opacity = '0';
-                }, 100);
-                
-                setTimeout(() => emoji.remove(), 2100);
-            }, i * 40);
-        }
-    });
+// Yes button click
+yesBtn.addEventListener("click", () => {
+    const end = Date.now() + 3000;
+    const colors = ['#818cf8','#ffffff','#22c55e'];
+    (function frame() {
+        confetti({particleCount:6, angle:60, spread:55, origin:{x:0}, colors});
+        confetti({particleCount:6, angle:120, spread:55, origin:{x:1}, colors});
+        if(Date.now() < end) requestAnimationFrame(frame);
+    })();
+    card.style.transform = "scale(0.8)";
+    card.style.opacity = "0";
+    setTimeout(() => {
+        card.innerHTML = `
+        <div style="padding:20px;">
+            <div style="font-size:3rem; margin-bottom:20px;">Absolute Queen Behaviour👑</div>
+            <img src="./Khushi.jpg" alt="Queen Image" style="width:80%; max-width:300px; border-radius:20px; margin-bottom:20px;">
+            <p style="color: #94a3b8; margin:20px 0; line-height:1.6; font-size:1.1rem;">
+                Sister Level: <b>Legendary</b><br>
+                Controller Status: <b>Secured</b>
+            </p>
+            <div style="padding:10px; background: rgba(34,197,94,0.1); border-radius:12px; color:#22c55e; font-size:0.8rem; font-weight:800;">
+              Best sister = Khushi Didi. Always and forever.
+            </div>
+        </div>`;
+        card.style.transform = "scale(1)";
+        card.style.opacity = "1";
+    }, 600);
+});
 </script>
 
 </body>
